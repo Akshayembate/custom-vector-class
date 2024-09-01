@@ -15,7 +15,7 @@ private:
         // 2 . copy/ move old elements in to the new memory 
         // 3 . delete
 
-        T* newBlock = new T[newCapacity];
+        T* newBlock = (T*)::operator new(newCapacity * sizeof(T));
 
         if (newCapacity < m_Size)
         {
@@ -27,7 +27,13 @@ private:
             newBlock[i] = std::move(m_Data[i]);
         }
 
-        delete[] m_Data;
+        // delete the old size 
+        for (size_t i = 0; i < m_Size; i++)
+        {
+            m_Data[i].~T();
+        }
+
+        ::operator delete(m_Data, m_Capacity * sizeof(T));
         m_Data = newBlock;
         m_Capacity = newCapacity;
     }
@@ -77,5 +83,54 @@ public:
         return m_Size;
     }
 
-    //~Vector();
+    // function for reserving the capacity manually
+    void reserve(size_t capacity)
+    {
+        if (capacity > m_Capacity)
+        {
+            reAlloc(capacity);
+        }
+    }
+
+    // emplaceback function
+    template<typename...Args>
+    T& emplaceBack(Args&&...args)
+    {
+        std::cout << "before emplaceback - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
+        if (m_Size >= m_Capacity)
+        {
+            reAlloc(m_Capacity + m_Capacity / 2);
+        }
+        new (&m_Data[m_Size])  T(std::forward<Args>(args)...);
+
+        std::cout << "after emplacebck - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
+        return m_Data[m_Size++];
+    }
+
+    // popback
+    void popBack()
+    {
+        if (m_Size > 0)
+        {
+            m_Size--;
+            m_Data[m_Size].~T();
+        }
+    }
+
+    // clear
+    void clear()
+    {
+        for (size_t i = 0; i < m_Size; i++)
+        {
+            m_Data[i].~T();
+        }
+        m_Size = 0;
+    }
+
+    // distructor 
+    ~Vector()
+    {
+        clear();
+        ::operator delete(m_Data, m_Capacity * sizeof(T));
+    }
 };
