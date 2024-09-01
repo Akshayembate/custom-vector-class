@@ -119,6 +119,7 @@ int main()
     }
     #endif
 
+    #if 0
     Vector<int> values;
     values.emplaceBack(1);
     values.emplaceBack(2);
@@ -141,6 +142,34 @@ int main()
 
     std::cout << "iterator: \n";
     for (Vector<int>::iterator it = values.begin();
+    it != values.end(); it++)
+    {
+        std::cout << *it << "\n";
+    }
+    #endif
+
+    Vector<std::string> values;
+    values.emplaceBack("something");
+    values.emplaceBack("cpp");
+    values.emplaceBack("vector");
+    values.emplaceBack("it");
+    values.emplaceBack("null");
+
+    // iterate thrpow the values with using the [] operator
+    std::cout << "not using the iterator :\n";
+    for (size_t i = 0; i < values.Size(); i++)
+    {
+        std::cout << values[i] << "\n";
+    }
+    
+    std::cout << "range based for loops :\n";
+    for (auto& value : values)
+    {
+        std::cout << value << "\n";
+    }
+
+    std::cout << "iterator: \n";
+    for (Vector<std::string>::iterator it = values.begin();
     it != values.end(); it++)
     {
         std::cout << *it << "\n";

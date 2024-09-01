@@ -1,43 +1,77 @@
-Custom Vector Implementation in C++
-Overview
-This project is an implementation of a custom vector-like data structure in C++, inspired by the Standard Template Library's (STL) std::vector. The custom vector is designed to dynamically manage a collection of elements, providing automatic memory management and supporting a variety of operations such as adding, removing, and accessing elements.
+Custom C++ Vector Implementation
 
-This implementation demonstrates advanced C++ features such as move semantics, dynamic memory management, and template programming.
+This repository contains a custom implementation of a Vector class in C++. This custom vector class is similar to the standard std::vector but is implemented from scratch for educational purposes. The implementation also includes a custom iterator for the vector, allowing it to be used with range-based for loops and iterators.
 
 Features
-Dynamic Array Management: Automatically resizes as new elements are added.
-Move Semantics: Efficiently handles resources by moving rather than copying.
-Placement New: Constructs objects in pre-allocated memory to avoid unnecessary temporary object creation.
-Pop and Clear Operations: Supports removing elements and clearing the vector.
-EmplaceBack Operation: Constructs elements in place using perfect forwarding.
-Custom Destructor: Ensures proper cleanup of resources, preventing memory leaks.
-Usage
-Vector Class
-The Vector class template is the core of this project, providing a dynamically resizable array with the following methods:
+Dynamic Array Resizing: The vector dynamically resizes its capacity as elements are added.
+Copy and Move Semantics: The vector class fully supports copy and move semantics, ensuring efficient memory management.
+Custom Iterator: The vector class includes a custom iterator, allowing it to be used in range-based for loops and with standard iterator operations.
+Memory Management: The implementation includes proper memory management with constructors, destructors, and the RAII principle.
+Element Access: Elements can be accessed via the subscript operator ([]), similar to std::vector.
+Element Insertion: Supports both pushBack and emplaceBack methods for adding elements.
+Class Definitions
+Vector3
+The Vector3 class is a simple 3D vector with three float components (x, y, z). It includes:
 
-pushBack: Adds an element to the end of the vector. Can accept both lvalues and rvalues.
-emplaceBack: Constructs an element in place at the end of the vector, avoiding unnecessary copies or moves.
-popBack: Removes the last element from the vector and calls its destructor.
-clear: Clears the vector by destroying all elements.
-reserve: Preallocates memory for a specified number of elements, reducing the number of reallocations.
-operator[]: Provides access to elements by index.
-Size: Returns the current number of elements in the vector.
-Vector3 Struct
-The Vector3 struct represents a 3D vector with x, y, and z coordinates. It includes:
+Default, scalar, and parameterized constructors.
+Copy and move constructors.
+Copy and move assignment operators.
+A destructor that manages dynamically allocated memory.
+Vector<T>
+The Vector class is a template-based dynamic array implementation. It includes:
 
-Constructors: Multiple constructors for different initialization scenarios.
-Copy and Move Semantics: Support for copying and moving, including deep copying of internal resources.
-Custom Destructor: Ensures proper cleanup of dynamically allocated memory.
+Default constructor: Allocates initial memory.
+pushBack method: Adds elements to the end of the vector.
+emplaceBack method: Constructs elements in place at the end of the vector.
+popBack method: Removes the last element from the vector.
+clear method: Clears all elements from the vector.
+Subscript operator ([]): Access elements by index.
+Custom iterator support: Allows use in range-based for loops and standard iteration.
+vectorIterator
+The vectorIterator class is a custom iterator for the Vector class. It includes:
 
-Building and Running
-Clone the repository
-git clone https://github.com/your-username/your-repository-name.git
+Increment (++) and decrement (--) operators.
+Subscript operator ([]).
+Arrow operator (->) for pointer-like behavior.
+Dereference operator (*) for accessing the element pointed to by the iterator.
+Equality (==) and inequality (!=) comparison operators.
 
-Navigate to the project directory:
-cd custom-vector-class
+Example Usage
 
-Compile the code:
-g++ -std=c++11 -I include main.cpp -o vector_example
+```bash
+#include <iostream>
+#include "include/vector.h"
+int main()
+{
+    Vector<int> values;
+    values.emplaceBack(1);
+    values.emplaceBack(2);
+    values.emplaceBack(3);
+    values.emplaceBack(4);
+    values.emplaceBack(5);
 
-Run the program:
-./vector_example
+    // Iterate using index-based access
+    for (size_t i = 0; i < values.Size(); i++)
+    {
+        std::cout << values[i] << "\n";
+    }
+
+    // Iterate using range-based for loop
+    for (auto& value : values)
+    {
+        std::cout << value << "\n";
+    }
+
+    // Iterate using custom iterator
+    for (Vector<int>::iterator it = values.begin(); it != values.end(); it++)
+    {
+        std::cout << *it << "\n";
+    }
+
+    return 0;
+}
+Compilation
+To compile the code, use the following g++ command:
+
+
+g++ -Wall -Wextra -Wpedantic -Wshadow -std=c++11 main.cpp -o vector_example

@@ -13,6 +13,7 @@ public:
     using refernceType = valueType&;
 
     pointerType m_Ptr;
+
 public:
     // public methodes
     // constructor
@@ -73,7 +74,7 @@ public:
         return m_Ptr == other.m_Ptr;
     }
 
-    // not equals to opeartor
+    // notequalsto opeartor
     bool operator!=(const vectorIterator& other) const
     {
         return !(*this == other);
@@ -108,7 +109,7 @@ private:
 
         for (size_t i = 0; i < m_Size; i++)
         {
-            newBlock[i] = std::move(m_Data[i]);
+            new (&newBlock[i]) T(std::move(m_Data[i]));
         }
 
         // delete the old size 
