@@ -1,14 +1,98 @@
 #pragma once
 
+template<typename Vector>
+class vectorIterator
+{
+private:
+    // private variables 
+    //pointerType = m_Ptr;
+public:
+    // public variables
+    using valueType = typename Vector::valueType;
+    using pointerType = valueType*;
+    using refernceType = valueType&;
+
+    pointerType m_Ptr;
+public:
+    // public methodes
+    // constructor
+    vectorIterator(pointerType ptr)
+        : m_Ptr(ptr)
+    {}
+    
+
+    // operator++
+    vectorIterator& operator++()
+    {
+        m_Ptr++;
+        return *this;   
+    }
+
+    vectorIterator operator++(int)
+    {
+        vectorIterator iterator = *this;
+        ++(*this);
+        return iterator;
+    }
+
+    // decrement operator
+    vectorIterator operator--()
+    {
+        m_Ptr--;
+        return *this;
+    }
+
+    vectorIterator operator--(int)
+    {
+        vectorIterator iterator = *this;
+        --(*this);
+        return iterator;
+    }
+
+    // decrement operator
+    refernceType operator[](int index)
+    {
+        return *(m_Ptr + index);
+    }
+
+    // arrow operator
+    pointerType operator->()
+    {
+        return m_Ptr;
+    }
+
+    // * operator
+    refernceType operator*()
+    {
+        return *m_Ptr;
+    }
+
+    // == operator
+    bool operator==(const vectorIterator& other) const
+    {
+        return m_Ptr == other.m_Ptr;
+    }
+
+    // not equals to opeartor
+    bool operator!=(const vectorIterator& other) const
+    {
+        return !(*this == other);
+    }
+
+    //~vectorIterator();
+};
+
 template<typename T>
 class Vector
 {
 private:
+    // private class member
     T* m_Data = nullptr;
     size_t m_Size = 0;
     size_t m_Capacity = 0;
 
 private:
+    // private methode
     void reAlloc(size_t newCapacity)
     { 
         // 1 . allocate the new block of memory
@@ -34,16 +118,25 @@ private:
         }
 
         ::operator delete(m_Data, m_Capacity * sizeof(T));
+
+        // reassigning the pointers to the class variables 
         m_Data = newBlock;
         m_Capacity = newCapacity;
     }
 public:
+    // public variables 
+    using valueType = T;
+    using iterator = vectorIterator<Vector<T>>;
+public:
+    // public method
+    // constructor for allocating the initial memory 
     Vector()
     {
         // allocating memory in the constructor
         reAlloc(2);
     }
 
+    // pushBack function with const 
     void pushBack(const T& value)
     {
         if (m_Size >= m_Capacity)
@@ -55,6 +148,7 @@ public:
         m_Size++;
     }
 
+    // pushBack function by using std::move
     void pushBack(T&& value)
     {
         if (m_Size >= m_Capacity)
@@ -96,18 +190,18 @@ public:
     template<typename...Args>
     T& emplaceBack(Args&&...args)
     {
-        std::cout << "before emplaceback - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
+        //std::cout << "before emplaceback - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
         if (m_Size >= m_Capacity)
         {
             reAlloc(m_Capacity + m_Capacity / 2);
         }
         new (&m_Data[m_Size])  T(std::forward<Args>(args)...);
 
-        std::cout << "after emplacebck - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
+        //std::cout << "after emplacebck - size :" << m_Size << ", capacity :" << m_Capacity << "\n";
         return m_Data[m_Size++];
     }
 
-    // popback
+    // popback(removing one element in the vector )
     void popBack()
     {
         if (m_Size > 0)
@@ -117,7 +211,7 @@ public:
         }
     }
 
-    // clear
+    // clear (clear all the element from the vector class)
     void clear()
     {
         for (size_t i = 0; i < m_Size; i++)
@@ -127,7 +221,19 @@ public:
         m_Size = 0;
     }
 
-    // distructor 
+    // begain function
+    iterator begin()
+    {
+        return iterator(m_Data);
+    }
+
+    // end function
+    iterator end()
+    {
+        return iterator(m_Data + m_Size);
+    }
+
+    // distructor
     ~Vector()
     {
         clear();

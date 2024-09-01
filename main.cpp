@@ -3,26 +3,26 @@
 
 struct Vector3
 {
+    // struct memberrs
     float x = 0.0f, y = 0.0f, z = 0.0f;
     int* m_MemoryBlock = nullptr;
 
+    // default constructor 
     Vector3() = default;
 
+    // scalar constructor
     Vector3(float scalar)
         : x(scalar), y(scalar), z(scalar)
     {
         m_MemoryBlock = new int[5];
     }
 
-    Vector3(float x, float y, float z)
-        : x(x), y(y), z(z)
+    Vector3(float x_, float y_, float z_)
+        : x(x_), y(y_), z(z_)
     {
-        this->x = x;
-        this->y = y;
-        this->z = z;
-
         m_MemoryBlock = new int[5];
     }
+
     // copy constructor
     Vector3(const Vector3& other)
         : x(other.x), y(other.y), z(other.z)
@@ -74,6 +74,7 @@ struct Vector3
         return *this;
     }
 
+    // distructor 
     ~Vector3()
     {
         std::cout << "destroyed\n";
@@ -95,6 +96,7 @@ void printVector(const Vector<Vector3>& vector)
 int main()
 {
     //std::cout << "hello world \n";
+    #if 0
     {
         Vector<Vector3> vector;
         //vector.reserve(10);
@@ -115,6 +117,35 @@ int main()
 
         printVector(vector);
     }
+    #endif
+
+    Vector<int> values;
+    values.emplaceBack(1);
+    values.emplaceBack(2);
+    values.emplaceBack(3);
+    values.emplaceBack(4);
+    values.emplaceBack(5);
+
+    // iterate thrpow the values with using the [] operator
+    std::cout << "not using the iterator :\n";
+    for (size_t i = 0; i < values.Size(); i++)
+    {
+        std::cout << values[i] << "\n";
+    }
+    
+    std::cout << "range based for loops :\n";
+    for (int value : values)
+    {
+        std::cout << value << "\n";
+    }
+
+    std::cout << "iterator: \n";
+    for (Vector<int>::iterator it = values.begin();
+    it != values.end(); it++)
+    {
+        std::cout << *it << "\n";
+    }
+
     std::cin.get();
     return 0;
 }
