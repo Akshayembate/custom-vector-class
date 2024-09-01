@@ -38,7 +38,7 @@ Equality (==) and inequality (!=) comparison operators.
 
 Example Usage
 
-```bash
+
 #include <iostream>
 #include "include/vector.h"
 int main()
